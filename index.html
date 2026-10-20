@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Protótipo acadêmico do Banco Senac.">
+  <title>Banco Senac | Portal Digital</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="#" aria-label="Banco Senac início">
+      <img src="senac-logo.png" alt="Logotipo Senac" class="logo">
+      <span><strong>Banco Senac</strong><small>Portal digital</small></span>
+    </a>
+    <span class="secure"><span class="secure-dot"></span> Ambiente demonstrativo</span>
+  </header>
+
+  <main class="shell">
+    <section class="hero">
+      <div class="hero-copy">
+        <span class="eyebrow">SIMPLES. SEGURO. DIGITAL.</span>
+        <h1>Seu dinheiro, <em>seus planos.</em></h1>
+        <p>Uma experiência bancária digital feita para acompanhar você em cada etapa.</p>
+        <div class="hero-points">
+          <span>✓ Abertura de conta</span>
+          <span>✓ Acompanhamento de cadastro</span>
+          <span>✓ Painel financeiro demonstrativo</span>
+        </div>
+      </div>
+
+      <section class="panel" aria-live="polite">
+        <div class="panel-heading">
+          <div>
+            <span class="eyebrow" id="panel-kicker">BEM-VINDO DE VOLTA</span>
+            <h2 id="panel-title">Acesse sua conta</h2>
+          </div>
+          <div class="mini-mark">BS</div>
+        </div>
+        <p class="muted" id="panel-description">Entre para continuar sua experiência no Banco Senac.</p>
+
+        <div id="login-view" class="view">
+          <form id="login-form">
+            <label for="login-email">E-mail</label>
+            <input id="login-email" type="email" placeholder="voce@exemplo.com" autocomplete="email" required>
+            <label for="login-password">Senha</label>
+            <div class="password-wrap">
+              <input id="login-password" type="password" placeholder="Digite uma senha demonstrativa" autocomplete="current-password" required minlength="4">
+              <button type="button" class="show-password" data-toggle="login-password" aria-label="Mostrar ou ocultar senha">◉</button>
+            </div>
+            <div class="form-row between">
+              <label class="check"><input type="checkbox" id="remember"> Manter conectado</label>
+              <button type="button" class="text-button" id="forgot-button">Esqueci a senha</button>
+            </div>
+            <button class="primary full" type="submit">Entrar na conta <span>→</span></button>
+          </form>
+          <div class="or"><span>ou</span></div>
+          <button class="secondary full" id="open-account-button" type="button">Quero abrir uma conta</button>
+          <p class="fine-print">Protótipo acadêmico: não use senhas ou dados bancários reais.</p>
+        </div>
+
+        <div id="signup-view" class="view hidden">
+          <form id="signup-form">
+            <div class="form-grid">
+              <div class="field wide"><label for="full-name">Nome completo</label><input id="full-name" required minlength="3" autocomplete="name" placeholder="Seu nome completo"></div>
+              <div class="field"><label for="cpf">CPF</label><input id="cpf" inputmode="numeric" maxlength="14" required placeholder="000.000.000-00"></div>
+              <div class="field"><label for="birth">Data de nascimento</label><input id="birth" type="date" required></div>
+              <div class="field wide"><label for="signup-email">E-mail</label><input id="signup-email" type="email" required autocomplete="email" placeholder="voce@exemplo.com"></div>
+              <div class="field"><label for="phone">Celular</label><input id="phone" type="tel" inputmode="tel" required placeholder="(11) 99999-9999"></div>
+              <div class="field"><label for="cep">CEP</label><input id="cep" inputmode="numeric" maxlength="9" required placeholder="00000-000"></div>
+              <div class="field wide"><label for="address">Endereço</label><input id="address" required placeholder="Rua, número, bairro e cidade"></div>
+              <div class="field"><label for="income">Renda mensal</label><select id="income" required><option value="">Selecione</option><option>Até R$ 1.500</option><option>R$ 1.501 a R$ 3.000</option><option>R$ 3.001 a R$ 6.000</option><option>Acima de R$ 6.000</option></select></div>
+              <div class="field"><label for="account-type">Tipo de conta</label><select id="account-type" required><option value="">Selecione</option><option>Conta corrente</option><option>Conta universitária</option></select></div>
+            </div>
+            <label class="check consent"><input type="checkbox" id="consent" required> Confirmo que os dados são fictícios e aceito continuar nesta demonstração.</label>
+            <button class="primary full" type="submit">Enviar cadastro <span>→</span></button>
+            <button class="back-link" type="button" data-go="login">← Voltar para o login</button>
+          </form>
+        </div>
+
+        <div id="analysis-view" class="view hidden">
+          <div class="status-illustration">✓</div>
+          <h3>Cadastro recebido!</h3>
+          <p class="muted">Sua solicitação demonstrativa foi registrada nesta sessão e está aguardando análise.</p>
+          <div class="status-card"><span>Status do cadastro</span><strong class="status-pill">Em análise</strong><small>Protocolo: <b id="protocol">BS-000000</b></small></div>
+          <button class="primary full" id="check-status" type="button">Consultar cadastro</button>
+          <button class="back-link" type="button" data-go="login">Voltar ao início</button>
+        </div>
+
+        <div id="dashboard-view" class="view hidden">
+          <div class="welcome-row"><div><span class="muted small">Olá,</span><h3 id="customer-name">Cliente</h3></div><span class="avatar">👤</span></div>
+          <div class="balance-card">
+            <span>Saldo disponível (simulado)</span>
+            <button type="button" id="toggle-balance" aria-label="Mostrar ou ocultar saldo">◉</button>
+            <strong id="balance">R$ 2.450,80</strong>
+            <small>Conta demonstrativa •••• 2048</small>
+          </div>
+          <div class="quick-actions">
+            <button type="button" class="action" data-action="Pix"><span>↗</span>Pix</button>
+            <button type="button" class="action" data-action="Transferência"><span>⇄</span>Transferir</button>
+            <button type="button" class="action" data-action="Cartões"><span>▣</span>Cartões</button>
+          </div>
+          <div class="section-line"><h3>Últimas movimentações</h3><span>Exemplo</span></div>
+          <div class="transaction"><span class="transaction-icon incoming">↓</span><span><b>Transferência recebida</b><small>Hoje, 10:24</small></span><strong class="positive">+ R$ 350,00</strong></div>
+          <div class="transaction"><span class="transaction-icon outgoing">↑</span><span><b>Compra no débito</b><small>Ontem, 18:40</small></span><strong>− R$ 42,90</strong></div>
+          <div class="transaction"><span class="transaction-icon outgoing">↑</span><span><b>Pagamento de conta</b><small>15 out, 09:12</small></span><strong>− R$ 119,90</strong></div>
+          <button class="back-link" type="button" id="logout-button">Sair da conta</button>
+        </div>
+        <div id="toast" class="toast hidden" role="status"></div>
+      </section>
+    </section>
+    <footer><span>© 2026 Banco Senac — Projeto acadêmico</span><span>Esta aplicação é uma simulação e não representa um serviço bancário real.</span></footer>
+  </main>
+  <script src="script.js"></script>
+</body>
+</html>
