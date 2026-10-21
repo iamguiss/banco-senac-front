@@ -78,3 +78,58 @@ $("#logout-button").addEventListener("click", () => {
   $("#login-form").reset();
   showView("login");
 });
+
+// Persistência do rascunho do formulário de cadastro.
+const DRAFT_KEY = "rascunhoCadastro";
+const signupForm = document.getElementById("signup-form");
+const clearDraftLink = document.getElementById("link-limpar-rascunho");
+
+function saveSignupDraft() {
+  if (!signupForm) return;
+  const draft = {};
+  signupForm.querySelectorAll("input, select, textarea").forEach(field => {
+    if (!field.id) return;
+    draft[field.id] = (field.type === "checkbox" || field.type === "radio")
+      ? field.checked : field.value;
+  });
+  try {
+    localStorage.setItem(DRAFT_KEY, JSON.stringify(draft));
+  } catch (error) {
+    console.warn("Não foi possível salvar o rascunho.", error);
+  }
+}
+
+function restoreSignupDraft() {
+  if (!signupForm) return;
+  try {
+    const saved = localStorage.getItem(DRAFT_KEY);
+    if (!saved) return;
+    const draft = JSON.parse(saved);
+    Object.entries(draft).forEach(([id, value]) => {
+      const field = document.getElementById(id);
+      if (!field || !signupForm.contains(field)) return;
+      if (field.type === "checkbox" || field.type === "radio") {
+        field.checked = Boolean(value);
+      } else {
+        field.value = value ?? "";
+      }
+    });
+  } catch (error) {
+    console.warn("Não foi possível restaurar o rascunho.", error);
+  }
+}
+
+if (signupForm) {
+  signupForm.addEventListener("input", saveSignupDraft);
+  signupForm.addEventListener("change", saveSignupDraft);
+  restoreSignupDraft();
+}
+
+if (clearDraftLink) {
+  clearDraftLink.addEventListener("click", event => {
+    event.preventDefault();
+    localStorage.removeItem(DRAFT_KEY);
+    if (signupForm) signupForm.reset();
+    toast("Rascunho apagado. Os campos do cadastro foram limpos.");
+  });
+}
