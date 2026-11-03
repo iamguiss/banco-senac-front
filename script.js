@@ -72,13 +72,19 @@ $("#signup-form").addEventListener("submit", async event => {
   const confirmarSenha = $("#confirm-password");
 
   const regras = [
-    { campo: nome, regex: /^[\p{L}]+(?:[ \p{L}]*[\p{L}]+)+$/u, mensagem: "Informe seu nome completo (nome e sobrenome)." },
+    { campo: nome, regex: /.+/, mensagem: "Informe seu nome completo (nome e sobrenome)." },
     { campo: cpf, regex: /^(?:\d{11}|\d{3}\.\d{3}\.\d{3}-\d{2})$/, mensagem: "Informe um CPF válido com 11 dígitos." },
     { campo: email, regex: /^[^\s@]+@[^\s@]+\.[^\s@]+$/, mensagem: "Informe um e-mail válido." },
     { campo: celular, regex: /^(?:\(\d{2}\)|\d{2})\s?\d{5}-?\d{4}$/, mensagem: "Informe um celular com DDD e 9 dígitos." },
     { campo: cep, regex: /^\d{5}-?\d{3}$/, mensagem: "Informe um CEP com 8 dígitos." },
     { campo: senha, regex: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/, mensagem: "A senha deve ter 8 caracteres, letra maiúscula, minúscula e número." }
   ];
+
+  const partesNome = nome.value.trim().split(/\\s+/).filter(parte => /[\\p{L}]/u.test(parte));
+  if (partesNome.length < 2) {
+    showSignupError("Informe seu nome completo (nome e sobrenome).", nome);
+    return;
+  }
 
   for (const regra of regras) {
     if (!regra.regex.test(regra.campo.value.trim())) {
