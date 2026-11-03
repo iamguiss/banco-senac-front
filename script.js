@@ -49,23 +49,105 @@ $("#cep").addEventListener("input", event => {
   if (value.length > 5) value = value.replace(/^(\d{5})(\d+)/, "$1-$2");
   event.target.value = value;
 });
-$("#signup-form").addEventListener("submit", event => {
+const signupError = $("#cadastro-erro");
+function showSignupError(message, field) {
+  signupError.textContent = message;
+  signupError.classList.remove("hidden");
+  if (field) field.focus();
+}
+function clearSignupError() {
+  signupError.textContent = "";
+  signupError.classList.add("hidden");
+}
+$("#signup-form").addEventListener("submit", async event => {
   event.preventDefault();
-  const birth = new Date(`${$("#birth").value}T00:00:00`);
-  const today = new Date();
-  if (!Number.isFinite(birth.getTime()) || birth > today) {
-    toast("Confira a data de nascimento informada.");
+  clearSignupError();
+
+  const nome = $("#full-name");
+  const cpf = $("#cpf");
+  const email = $("#signup-email");
+  const celular = $("#phone");
+  const cep = $("#cep");
+  const senha = $("#signup-password");
+  const confirmarSenha = $("#confirm-password");
+
+  const regras = [
+    { campo: nome, regex: /^[\\p{L}]+(?:[ \\p{L}]*[\\p{L}]+)+$/u, mensagem: "Informe seu nome completo (nome e sobrenome)." },
+    { campo: cpf, regex: /^(?:\\d{11}|\\d{3}\\.\\d{3}\\.\\d{3}-\\d{2})$/, mensagem: "Informe um CPF válido com 11 dígitos." },
+    { campo: email, regex: /^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/, mensagem: "Informe um e-mail válido." },
+    { campo: celular, regex: /^(?:\\(\\d{2}\\)|\\d{2})\\s?\\d{5}-?\\d{4}$/, mensagem: "Informe um celular com DDD e 9 dígitos." },
+    { campo: cep, regex: /^\\d{5}-?\\d{3}$/, mensagem: "Informe um CEP com 8 dígitos." },
+    { campo: senha, regex: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d).{8,}$/, mensagem: "A senha deve ter 8 caracteres, letra maiúscula, minúscula e número." }
+  ];
+
+  for (const regra of regras) {
+    if (!regra.regex.test(regra.campo.value.trim())) {
+      showSignupError(regra.mensagem, regra.campo);
+      return;
+    }
+  }
+
+  if (cpf.value.replace(/\\D/g, "").length !== 11) {
+    showSignupError("O CPF precisa ter 11 dígitos.", cpf);
     return;
   }
-  if ($("#cpf").value.replace(/\D/g, "").length !== 11) {
-    toast("Para a simulação, informe um CPF com 11 dígitos.");
+  if (celular.value.replace(/\\D/g, "").length !== 11) {
+    showSignupError("O celular precisa ter 11 dígitos incluindo o DDD.", celular);
     return;
   }
-  const protocol = "BS-" + Math.floor(100000 + Math.random() * 900000);
-  $("#protocol").textContent = protocol;
-  showView("analysis");
+  if (senha.value !== confirmarSenha.value) {
+    showSignupError("As senhas não são iguais.", confirmarSenha);
+    return;
+  }
+
+  const birthValue = $("#birth").value;
+  const birth = new Date(`${birthValue}T00:00:00`);
+  if (!birthValue || !Number.isFinite(birth.getTime()) || birth > new Date()) {
+    showSignupError("Confira a data de nascimento informada.", $("#birth"));
+    return;
+  }
+
+  const dados = {
+    nome: nome.value.trim(),
+    cpf: cpf.value.replace(/\\D/g, ""),
+    email: email.value.trim(),
+    celular: celular.value.replace(/\\D/g, ""),
+    cep: cep.value.replace(/\\D/g, ""),
+    senha: senha.value,
+    dataNascimento: birthValue,
+    endereco: $("#address").value.trim(),
+    rendaMensal: $("#income").value,
+    tipoConta: $("#account-type").value
+  };
+
+  const botao = signupForm.querySelector('button[type="submit"]');
+  botao.disabled = true;
+  botao.textContent = "Enviando cadastro...";
+
+  try {
+    const resposta = await fetch("https://senac-bank-api.dennislopes.com.br/api/clientes", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(dados)
+    });
+
+    const resultado = await resposta.json().catch(() => ({}));
+    if (!resposta.ok) {
+      throw new Error(resultado.mensagem || resultado.message || "Não foi possível enviar o cadastro. Confira os dados.");
+    }
+
+    const protocolo = resultado.protocolo || resultado.id || ("BS-" + Math.floor(100000 + Math.random() * 900000));
+    $("#protocol").textContent = protocolo;
+    try { localStorage.removeItem(DRAFT_KEY); } catch (error) {}
+    showView("analysis");
+  } catch (error) {
+    showSignupError(error.message || "Erro de conexão. Tente novamente.");
+  } finally {
+    botao.disabled = false;
+    botao.innerHTML = 'Enviar cadastro <span>→</span>';
+  }
 });
-$("#check-status").addEventListener("click", () => toast("Status atual: em análise. Este protótipo não envia dados para um servidor."));
+$("#check-status").addEventListener("click", () => toast("Cadastro enviado para análise. Consulte o protocolo informado."));
 let balanceVisible = true;
 $("#toggle-balance").addEventListener("click", () => {
   balanceVisible = !balanceVisible;
