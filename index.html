@@ -70,12 +70,15 @@
               <div class="field"><label for="cpf">CPF</label><input id="cpf" inputmode="numeric" maxlength="14" required placeholder="000.000.000-00"></div>
               <div class="field"><label for="birth">Data de nascimento</label><input id="birth" type="date" required></div>
               <div class="field wide"><label for="signup-email">E-mail</label><input id="signup-email" type="email" required autocomplete="email" placeholder="voce@exemplo.com"></div>
+              <div class="field"><label for="signup-password">Senha</label><input id="signup-password" type="password" required autocomplete="new-password" placeholder="Mínimo de 8 caracteres"></div>
+              <div class="field"><label for="confirm-password">Confirmar senha</label><input id="confirm-password" type="password" required autocomplete="new-password" placeholder="Repita a senha"></div>
               <div class="field"><label for="phone">Celular</label><input id="phone" type="tel" inputmode="tel" required placeholder="(11) 99999-9999"></div>
               <div class="field"><label for="cep">CEP</label><input id="cep" inputmode="numeric" maxlength="9" required placeholder="00000-000"></div>
               <div class="field wide"><label for="address">Endereço</label><input id="address" required placeholder="Rua, número, bairro e cidade"></div>
               <div class="field"><label for="income">Renda mensal</label><select id="income" required><option value="">Selecione</option><option>Até R$ 1.500</option><option>R$ 1.501 a R$ 3.000</option><option>R$ 3.001 a R$ 6.000</option><option>Acima de R$ 6.000</option></select></div>
               <div class="field"><label for="account-type">Tipo de conta</label><select id="account-type" required><option value="">Selecione</option><option>Conta corrente</option><option>Conta universitária</option></select></div>
             </div>
+            <p id="cadastro-erro" class="toast hidden" role="alert" aria-live="assertive"></p>
             <label class="check consent"><input type="checkbox" id="consent" required> Confirmo que os dados são fictícios e aceito continuar nesta demonstração.</label>
             <button class="primary full" type="submit">Enviar cadastro <span>→</span></button>
             <button class="back-link" type="button" data-go="login">← Voltar para o login</button>
